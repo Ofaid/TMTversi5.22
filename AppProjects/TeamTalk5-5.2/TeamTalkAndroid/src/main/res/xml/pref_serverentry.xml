@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/pref_title_server_props" >
+
+    <PreferenceCategory
+        android:key="srv_info"
+        android:title="@string/pref_title_server_info">
+        <EditTextPreference
+            android:key="servername"
+            android:summary="@string/pref_summary_server_name"
+            android:title="@string/pref_title_server_name"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+        <EditTextPreference
+            android:key="ipaddr"
+            android:summary="@string/pref_summary_server_address"
+            android:title="@string/pref_title_server_address"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+        <EditTextPreference
+            android:defaultValue="10333"
+            android:key="tcpport"
+            android:maxLength="5"
+            android:numeric="integer"
+            android:title="@string/pref_title_tcp_port"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+        <EditTextPreference
+            android:defaultValue="10333"
+            android:key="udpport"
+            android:maxLength="5"
+            android:numeric="integer"
+            android:title="@string/pref_title_udp_port"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+        <CheckBoxPreference 
+            android:key="encrypted" 
+            android:title="@string/pref_title_encription" 
+            android:defaultValue="false"
+            android:persistent="false" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="auth_info"
+        android:title="@string/pref_title_authentication" android:persistent="false">
+        <EditTextPreference
+            android:key="username"
+            android:title="@string/pref_title_username"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+        <EditTextPreference
+            android:key="password"
+            android:title="@string/pref_title_password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+        <EditTextPreference
+            android:key="nickname"
+            android:title="@string/pref_title_nickname"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:persistent="false" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:key="join_info"
+        android:title="@string/pref_title_join_channel" android:persistent="false">
+        <CheckBoxPreference
+            android:key="remember_last_channel" 
+            android:title="@string/pref_title_last_channel"
+            android:defaultValue="true"
+            android:disableDependentsState="true"
+            android:persistent="false" />
+        <EditTextPreference
+            android:defaultValue="/"
+            android:key="channel"
+            android:title="@string/pref_title_channel"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:dependency="remember_last_channel" 
+            android:persistent="false" />
+        <EditTextPreference
+            android:key="chanpasswd"
+            android:title="@string/pref_title_channel_password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:dependency="remember_last_channel" 
+            android:persistent="false" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
