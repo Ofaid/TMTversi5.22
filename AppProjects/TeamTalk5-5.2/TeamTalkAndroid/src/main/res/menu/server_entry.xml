@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_saveserver"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/action_save">
+    </item>
+    <item
+        android:id="@+id/action_connect"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/action_connect">
+    </item>
+
+</menu>
