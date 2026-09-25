@@ -1,7 +1,0 @@
-dependencies {
-    implementation project(':core')
-    implementation project(':pkix')
-    implementation project(':prov')
-
-    implementation group: 'javax.mail', name: 'mail', version: '1.4.+'
-}
