@@ -1,14 +1,16 @@
-name: TeamTalk5 Android Build (arm64-v8a Only + Cached NDK)
+name: TeamTalk5 Android Build (Standalone arm64-v8a)
 
 on:
   workflow_dispatch:
+  push:
+    branches: [ modifikasi-jar-kelas ] # Otomatis jalan pas push ke branch modifikasi
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-arm64-apk:
+  build-apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,41 +21,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       
-      - name: Set up Android NDK r29
-        uses: nttld/setup-ndk@v1
-        id: setup-ndk
-        with:
-          ndk-version: r29
-      
-      - name: Cache Native Builds (WebRTC & Install)
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{runner.workspace}}/webrtc
-            ${{runner.workspace}}/install-android
-          key: ${{ runner.os }}-native-r29-${{ hashFiles('**/CMakeLists.txt', '**/Makefile', 'Build/**') }}
-          restore-keys: |
-            ${{ runner.os }}-native-r29-
-            ${{ runner.os }}-native-
-      
-      - name: Install System Dependencies
-        working-directory: ${{github.workspace}}/Build
-        run: |
-          export JAVA_HOME=${{ env.JAVA_HOME }}
-          sudo make depend-ubuntu24-android || echo "Warning: Dependency install skipped/warned. Using pre-installed Java 17."
-      
-      # ✅ PERBAIKAN UTAMA: GANTI android-all JADI android-arm64-v8a
-      - name: Build TeamTalk Library (C++ ARM64 ONLY)
-        working-directory: ${{github.workspace}}/Build
-        run: |
-          make CMAKE_EXTRA="-G Ninja -DWEBRTC_FETCH_PATH=${{runner.workspace}}/webrtc -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/install-android" \
-               CMAKE_BUILD_EXTRA="--target install" android-arm64-v8a
-        env:
-          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          JAVA_HOME: ${{ env.JAVA_HOME }}
+      # ✅ LANGKAH KRUSIAL: UPLOAD LIBRARY JAR & SO KE REPO SEBELUM BUILD
+      # Pastikan file-file ini ada di repo:
+      # libs/TeamTalk5.jar
+      # libs/TeamTalk5Test.jar  
+      # app/src/main/jniLibs/arm64-v8a/libTeamTalk5-jni.so
       
       - name: Generate Release Keystore
-        working-directory: ${{github.workspace}}/Client/TeamTalkAndroid
         run: |
           keytool -genkeypair -v -keystore release-key.keystore \
             -alias teamtalk-release -keyalg RSA -keysize 2048 -validity 10000 \
@@ -66,15 +40,14 @@ jobs:
           keyPassword=android123
           EOF
       
-      - name: Build arm64-v8a Release APK
-        working-directory: ${{github.workspace}}/Client/TeamTalkAndroid
+      - name: Build Release APK
         run: |
           chmod +x gradlew
           ./gradlew assembleRelease --no-daemon
       
-      - name: Upload arm64-v8a APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: TeamTalk5-arm64-v8a-Release
-          path: Client/TeamTalkAndroid/build/outputs/apk/release/*.apk
+          name: TeamTalk5-arm64-v8a-Standalone
+          path: build/outputs/apk/release/*.apk
           if-no-files-found: error
