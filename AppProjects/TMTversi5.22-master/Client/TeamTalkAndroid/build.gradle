@@ -9,11 +9,12 @@ if (ksFile.exists()) {
 }
 
 android {
-    namespace = 'dk.bearware.gui'
+    // ✅ GANTI NAMESPACE BIAR GAK BENTROK SAMA PROJECT LAIN
+    namespace = 'dk.bearware.gui.standalone' 
     compileSdk = 37 
     buildToolsVersion = '37.0.0'
-    ndkVersion = '29.0.14206865'
-
+    // ndkVersion dihapus karena kita handle JNI libs manual
+    
     defaultConfig {
         applicationId = 'dk.bearware.gui'
         minSdk = 23
@@ -21,9 +22,6 @@ android {
         versionCode = 150
         versionName = '5.22'
         testInstrumentationRunner = 'androidx.test.runner.AndroidJUnitRunner'
-        
-        // ⚠️ PENTING: JANGAN ADA abiFilters DI SINI KALAU PAKAI SPLITS
-        // Biarkan splits yang mengatur arsitektur agar tidak bentrok
     }
 
     signingConfigs {
@@ -34,11 +32,10 @@ android {
                 keyAlias = ks['keyAlias']
                 keyPassword = ks['keyPassword']
                 
-                // ✅ METODE SIGNING TERBARU (V1, V2, V3, V4)
                 enableV1Signing = true
                 enableV2Signing = true
                 enableV3Signing = true
-                enableV4Signing = false // Set true kalau mau upload ke Play Store
+                enableV4Signing = false
             }
         }
     }
@@ -73,7 +70,6 @@ android {
         generateLocaleConfig = true
     }
 
-    // ✅ HANYA INI YANG MENGATUR ARM64-V8A
     splits {
         abi {
             enable = true
@@ -83,15 +79,18 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            jniLibs.srcDirs = [layout.buildDirectory.dir('jniLibs-staging')]
-        }
-    }
+    // ✅ HAPUS sourceSets jniLibs-staging. Pakai folder standar aja.
+    // Kalau mau pakai folder custom, uncomment baris bawah & taruh .so di sana
+    // sourceSets {
+    //     main {
+    //         jniLibs.srcDirs = ['src/main/jniLibs']
+    //     }
+    // }
 
     packaging {
         jniLibs {
-            excludes += ['**/libTeamTalk5Pro-jni.so']
+            // ⚠️ HAPUS EXCLUDE INI KALAU KAMU MAU PAKAI LIB PRO
+            // excludes += ['**/libTeamTalk5Pro-jni.so']
         }
         pickFirsts = [
                 'META-INF/LICENSE.md',
@@ -104,16 +103,11 @@ android {
     }
 }
 
-tasks.register('syncJniLibs', Sync) {
-    from('../../Library/TeamTalkJNI/libs') {
-        include 'arm64-v8a/**'
-    }
-    into layout.buildDirectory.dir('jniLibs-staging')
-}
+// ✅ HAPUS TASK syncJniLibs YANG NYEDOT DARI MODUL LUAR
+// tasks.register('syncJniLibs', Sync) { ... } DIHAPUS TOTAL
 
-afterEvaluate {
-    tasks.named('preBuild').configure { dependsOn 'syncJniLibs' }
-}
+// ✅ HAPUS afterEvaluate DEPENDS_ON syncJniLibs
+// afterEvaluate { ... } DIHAPUS TOTAL
 
 dependencies {
     coreLibraryDesugaring libs.desugar.jdk.libs
@@ -126,14 +120,16 @@ dependencies {
     implementation libs.androidx.preference
     implementation libs.androidx.viewpager
     implementation libs.material
-    implementation files('../../Library/TeamTalkJNI/libs/TeamTalk5.jar')
+    
+    // ✅ GANTI PATH JAR KE FOLDER LOCAL 'libs/'
+    implementation files('libs/TeamTalk5.jar')
 
     testImplementation libs.junit.jupiter.api
-    testImplementation files('../../Library/TeamTalkJNI/libs/TeamTalk5Test.jar')
+    testImplementation files('libs/TeamTalk5Test.jar')
 
     androidTestImplementation libs.androidx.test.core
     androidTestImplementation libs.androidx.test.runner
     androidTestImplementation libs.androidx.test.rules
     androidTestImplementation libs.junit.jupiter.api
-    androidTestImplementation files('../../Library/TeamTalkJNI/libs/TeamTalk5Test.jar')
+    androidTestImplementation files('libs/TeamTalk5Test.jar')
 }
