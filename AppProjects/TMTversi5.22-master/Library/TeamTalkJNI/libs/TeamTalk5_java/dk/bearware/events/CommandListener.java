@@ -1,0 +1,35 @@
+/*
+ * Decompiled with CFR 0.152.
+ * 
+ * Could not load the following classes:
+ *  java.lang.Object
+ */
+package dk.bearware.events;
+
+import dk.bearware.events.ClientEventListener;
+
+public interface CommandListener
+extends ClientEventListener.OnCmdErrorListener,
+ClientEventListener.OnCmdSuccessListener,
+ClientEventListener.OnCmdProcessingListener,
+ClientEventListener.OnCmdMyselfLoggedInListener,
+ClientEventListener.OnCmdMyselfLoggedOutListener,
+ClientEventListener.OnCmdMyselfKickedFromChannelListener,
+ClientEventListener.OnCmdUserLoggedInListener,
+ClientEventListener.OnCmdUserLoggedOutListener,
+ClientEventListener.OnCmdUserUpdateListener,
+ClientEventListener.OnCmdUserJoinedChannelListener,
+ClientEventListener.OnCmdUserLeftChannelListener,
+ClientEventListener.OnCmdUserTextMessageListener,
+ClientEventListener.OnCmdChannelNewListener,
+ClientEventListener.OnCmdChannelUpdateListener,
+ClientEventListener.OnCmdChannelRemoveListener,
+ClientEventListener.OnCmdServerUpdateListener,
+ClientEventListener.OnCmdFileNewListener,
+ClientEventListener.OnCmdFileRemoveListener,
+ClientEventListener.OnCmdUserAccountListener,
+ClientEventListener.OnCmdBannedUserListener,
+ClientEventListener.OnCmdUserAccountNewListener,
+ClientEventListener.OnCmdUserAccountRemoveListener {
+}
+
